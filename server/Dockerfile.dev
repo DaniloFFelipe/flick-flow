@@ -1,0 +1,17 @@
+FROM node:22.11.0-slim
+
+RUN apt update && \
+    apt install -y curl && \
+    curl -fsSL https://get.docker.com -o get-docker.sh && \
+    sh ./get-docker.sh
+
+ENV DOCKER_GROUP_ID 999
+## create group if not exists
+RUN groupadd -g ${DOCKER_GROUP_ID} docker-host-group; exit 0
+RUN usermod -aG ${DOCKER_GROUP_ID} node
+
+USER node
+
+WORKDIR /home/node/app
+
+CMD ["tail", "-f", "/dev/null"]
