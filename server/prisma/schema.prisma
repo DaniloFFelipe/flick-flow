@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+
+  email         String @unique
+  password_hash String
+  name          String
+  avatar_path   String
+
+  created_at    DateTime       @default(now())
+  subscriptions Subscription[]
+  contents      Content[]
+
+  @@map("users")
+}
+
+model Plan {
+  id String @id @default(cuid())
+
+  name               String
+  price_in_cents     Int
+  max_content_length Int    @default(5)
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id String @id @default(cuid())
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  plan    Plan   @relation(fields: [plan_id], references: [id])
+  plan_id String
+
+  expires_at DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("subscriptions")
+}
+
+enum ContentStatus {
+  pending
+  processing
+  ready
+}
+
+model Content {
+  id String @id @default(cuid())
+
+  thumbnail_path String
+  name           String
+  description    String
+
+  duration_in_sec Int
+
+  status           ContentStatus @default(pending)
+  originalLocation String
+  location         String?
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  sharedWith Share[]
+
+  @@map("contents")
+}
+
+model Share {
+  id String @id @default(cuid())
+
+  email String
+
+  content    Content @relation(fields: [content_id], references: [id])
+  content_id String
+
+  expires_at DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("shares")
+}

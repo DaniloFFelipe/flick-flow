@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # postgres:
+  #   container_name: encoder
+  #   image: postgres
+  #   ports:
+  #     - 5439:5432
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: docker
+  #     POSTGRES_DB: encoder
+  #     PGDATA: /data/postgres
+  #   volumes:
+  #     - ./data/pg:/data/postgres
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=postgres
+  #     - PGADMIN_DEFAULT_PASSWORD=docker
+  #   ports:
+  #     - '5050:5050'
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis:/data
+
+  # minio:
+  #   image: docker.io/bitnami/minio:2022
+  #   ports:
+  #     - '9000:9000'
+  #     - '9001:9001'
+  #   networks:
+  #     - minionetwork
+  #   volumes:
+  #     - 'minio_data:/data'
+  #   environment:
+  #     - MINIO_ROOT_USER=username
+  #     - MINIO_ROOT_PASSWORD=pasword1
+  #     - MINIO_DEFAULT_BUCKETS=encoder
+
+# networks:
+#   minionetwork:
+#     driver: bridge
+
+# volumes:
+#   minio_data:
+#     driver: local
