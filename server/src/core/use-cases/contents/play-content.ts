@@ -47,6 +47,8 @@ export class PlayContent {
       return AppError.r(StatusCodes.BAD_REQUEST, 'content.cannot.be-played')
     }
 
-    return R.success({ url: `${Env.STREAM_CND_BASE_URL}${content.location}` })
+    return R.success({
+      url: `${Env.STREAM_CND_BASE_URL}/${Env.AWS_BUCKET}/${content.location}`,
+    })
   }
 }
